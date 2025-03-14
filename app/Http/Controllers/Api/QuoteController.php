@@ -78,7 +78,7 @@ class QuoteController extends Controller{
     
     public function GetQuoteWithLength(Request $request, $length){
 
-    $quotes=Quote::all();
+        $quotes=Quote::all();
             foreach($quotes as $quote){
                 if(str_word_count($quote->content) == $length){
                     $matchedQuotes[] = $quote; 
