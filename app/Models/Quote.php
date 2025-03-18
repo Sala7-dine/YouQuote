@@ -4,8 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Quote extends Model
-{
+class Quote extends Model{
     protected $table = 'quotes';
 
     protected $fillable = [
@@ -15,4 +14,5 @@ class Quote extends Model
         'view_count',
         'user_id',
     ];
+
 }

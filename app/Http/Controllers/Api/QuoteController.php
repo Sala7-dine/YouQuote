@@ -6,7 +6,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Quote;
 
-class QuoteController extends Controller{
+class QuoteController extends Controller
+{
+    public function __construct()
+    {
+        $this->authorizeResource(Quote::class, 'quote');
+    }
 
     public function index(Request $request)
     {
@@ -22,6 +27,7 @@ class QuoteController extends Controller{
             'source' => 'nullable|string|max:255',
         ]);
         
+        $validated['user_id'] = auth()->id();
         $quote = Quote::create($validated);
         
         return response()->json([
