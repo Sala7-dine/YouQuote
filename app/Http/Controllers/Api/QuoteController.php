@@ -5,22 +5,22 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Quote;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class QuoteController extends Controller
 {
-    public function __construct()
-    {
-        $this->authorizeResource(Quote::class, 'quote');
-    }
+    use AuthorizesRequests;
 
     public function index(Request $request)
-    {
+    {    
+        $this->authorize('viewAny', Quote::class);
         $quotes=Quote::all();
         return response()->json([$quotes],200);
     }
 
     public function store(Request $request)
     {
+        $this->authorize('create', Quote::class);
         $validated = $request->validate([
             'content' => 'required|string',
             'author' => 'nullable|string|max:255',
@@ -37,6 +37,7 @@ class QuoteController extends Controller
 
     public function show(Quote $quote)
     {
+        $this->authorize('view', $quote);
         $quote->view_count++;
         $quote->save();
         return response()->json($quote, 200);
@@ -45,6 +46,7 @@ class QuoteController extends Controller
   
     public function update(Request $request, Quote $quote)
     {
+        $this->authorize('update', $quote);
         $validated = $request->validate([
             'content' => 'sometimes|required|string',
             'author' => 'nullable|string|max:255',
@@ -62,6 +64,7 @@ class QuoteController extends Controller
   
     public function destroy(Quote $quote)
     {
+        $this->authorize('delete', $quote);
         $quote->delete();
         
         return response()->json([
