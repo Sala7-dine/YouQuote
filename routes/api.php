@@ -20,6 +20,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource("tags", TagController::class);
     Route::post('/quotes/{quote}/like', [QuoteController::class, 'like']);
     Route::delete('/quotes/{quote}/like', [QuoteController::class, 'unlike']);
+    Route::post('/quotes/{quote}/favorite', [QuoteController::class, 'addToFavorites']);
+    Route::delete('/quotes/{quote}/favorite', [QuoteController::class, 'removeFromFavorites']);
+    Route::get('/favorites', [QuoteController::class, 'getFavorites']);
 });
 
 Route::get('/quotes/random/{count}', [QuoteController::class, 'random']);

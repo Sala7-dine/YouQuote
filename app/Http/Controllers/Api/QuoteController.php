@@ -146,4 +146,46 @@ class QuoteController extends Controller
             "message" => "Quote unliked successfully"
         ], 200);
     }
+
+    public function addToFavorites(Quote $quote)
+    {
+        $user = Auth::user();
+        if ($quote->isFavoritedBy($user)) {
+            return response()->json([
+                "message" => "Quote already in favorites"
+            ], 400);
+        }
+        
+        $quote->favorites()->attach($user->id);
+        return response()->json([
+            "message" => "Quote added to favorites successfully"
+        ], 200);
+    }
+
+    public function removeFromFavorites(Quote $quote)
+    {
+        $user = Auth::user();
+        if (!$quote->isFavoritedBy($user)) {
+            return response()->json([
+                "message" => "Quote not in favorites"
+            ], 400);
+        }
+        
+        $quote->favorites()->detach($user->id);
+        return response()->json([
+            "message" => "Quote removed from favorites successfully"
+        ], 200);
+    }
+
+    public function getFavorites()
+    {
+        $user = Auth::user();
+        $favorites = Quote::whereHas('favorites', function($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->with(['likes', 'favorites'])->get();
+
+        return response()->json([
+            'favorites' => $favorites
+        ], 200);
+    }
 }
