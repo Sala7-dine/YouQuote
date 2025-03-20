@@ -6,26 +6,20 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
         Schema::create('quotes', function (Blueprint $table) {
             $table->id();
             $table->text('content');
             $table->string('author')->nullable();
             $table->string('source')->nullable();
-            $table->unsignedInteger('view_count')->default(0);
-            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
+            $table->integer('view_count')->default(0);
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('quotes');
     }

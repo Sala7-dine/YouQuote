@@ -3,16 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Quote extends Model{
-    protected $table = 'quotes';
+class Quote extends Model
+{
+    use HasFactory;
 
-    protected $fillable = [
-        'content',
-        'author',
-        'source',
-        'view_count',
-        'user_id',
-    ];
+    protected $fillable = ['content', 'author', 'source', 'view_count', 'user_id'];
 
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
 }

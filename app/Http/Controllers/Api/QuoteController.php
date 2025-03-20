@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Quote;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Auth;
 
 class QuoteController extends Controller
 {
@@ -27,7 +28,7 @@ class QuoteController extends Controller
             'source' => 'nullable|string|max:255',
         ]);
         
-        $validated['user_id'] = auth()->id();
+        $validated['user_id'] = Auth::id();    
         $quote = Quote::create($validated);
         
         return response()->json([
