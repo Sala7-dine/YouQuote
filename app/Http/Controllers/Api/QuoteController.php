@@ -15,8 +15,8 @@ class QuoteController extends Controller
     public function index(Request $request)
     {    
         $this->authorize('viewAny', Quote::class);
-        $quotes=Quote::all();
-        return response()->json([$quotes],200);
+        $quotes = Quote::with('likes')->get();
+        return response()->json(['quotes' => $quotes], 200);
     }
 
     public function store(Request $request)
@@ -39,6 +39,7 @@ class QuoteController extends Controller
     public function show(Quote $quote)
     {
         $this->authorize('view', $quote);
+        $quote->load('likes');
         $quote->view_count++;
         $quote->save();
         return response()->json($quote, 200);
@@ -75,9 +76,7 @@ class QuoteController extends Controller
 
     public function random(Request $request, $count)
     {
-    
-    
-        $quotes = Quote::inRandomOrder()->limit($count)->get();
+        $quotes = Quote::with('likes')->inRandomOrder()->limit($count)->get();
         foreach($quotes as $quote){
             $quote->view_count++;
             $quote->save();
@@ -115,6 +114,36 @@ class QuoteController extends Controller
         
         return response()->json([
             "quote_most_popular" => $quote
+        ], 200);
+    }
+
+    public function like(Quote $quote)
+    {
+        $user = Auth::user();
+        if ($quote->isLikedBy($user)) {
+            return response()->json([
+                "message" => "Quote already liked"
+            ], 400);
+        }
+        
+        $quote->likes()->attach($user->id);
+        return response()->json([
+            "message" => "Quote liked successfully"
+        ], 200);
+    }
+
+    public function unlike(Quote $quote)
+    {
+        $user = Auth::user();
+        if (!$quote->isLikedBy($user)) {
+            return response()->json([
+                "message" => "Quote not liked"
+            ], 400);
+        }
+        
+        $quote->likes()->detach($user->id);
+        return response()->json([
+            "message" => "Quote unliked successfully"
         ], 200);
     }
 }

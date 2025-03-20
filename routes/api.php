@@ -18,6 +18,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource("quotes", QuoteController::class);
     Route::apiResource("category", CategoryController::class);
     Route::apiResource("tags", TagController::class);
+    Route::post('/quotes/{quote}/like', [QuoteController::class, 'like']);
+    Route::delete('/quotes/{quote}/like', [QuoteController::class, 'unlike']);
 });
 
 Route::get('/quotes/random/{count}', [QuoteController::class, 'random']);
